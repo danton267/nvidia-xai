@@ -1,0 +1,7 @@
+/* ++++++++++++ */
+/* GRAPH style */
+/* ++++++++++++ */
+
+#graph-scatter-plot .nsewdrag.drag {
+    fill: #1A1A1A !important;
+}

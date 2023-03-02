@@ -1,0 +1,7 @@
+dash==2.6.2
+gunicorn==20.0.4
+pandas==1.5.1
+werkzeug==2.2.2
+
+dash-shap-components==0.0.2
+shap==0.40.0
