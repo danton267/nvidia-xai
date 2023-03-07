@@ -1,3 +1,9 @@
+clustering_models.pkl
+credit_default_risk/
+data/
+playground.ipynb
+data_cleaning.ipynb
+
 .DS_Store
 *.rdb
 
