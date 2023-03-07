@@ -65,6 +65,7 @@ CONTROLS = [
                 "FIRST TENNESSEE BANK NATIONAL ASSOCIATION",
             ],
             value="JPMORGAN CHASE BANK, NATIONAL ASSOCIATION",
+            dropdownPosition="down"
         ),
         "random": lambda: random.choice(
             [
@@ -107,7 +108,7 @@ CONTROLS = [
             step=1000,
             value=100000,
             marks=[
-                {"value": str(i), "label": f"{i:,}"} for i in range(0, 900_001, 150_000)
+                {"value": str(i), "label": f"{i:,}"} for i in range(0, 800_001, 200_000)
             ],
         ),
         "random": lambda: random.randint(0, 1000000),
@@ -121,7 +122,7 @@ CONTROLS = [
             max=360,
             step=1,
             value=360,
-            marks=[{"value": str(i), "label": str(i)} for i in range(0, 360, 30)],
+            marks=[{"value": str(i), "label": str(i)} for i in range(0, 361, 60)],
         ),
         "random": lambda: random.randint(0, 360),
     },
@@ -134,7 +135,7 @@ CONTROLS = [
             max=100,
             step=1,
             value=80,
-            marks=[{"value": str(i), "label": f"{i}%"} for i in range(0, 101, 10)],
+            marks=[{"value": str(i), "label": f"{i}%"} for i in range(0, 101, 25)],
         ),
         "random": lambda: random.randint(0, 100),
     },
@@ -147,7 +148,7 @@ CONTROLS = [
             max=100,
             step=1,
             value=80,
-            marks=[{"value": str(i), "label": f"{i}%"} for i in range(0, 101, 10)],
+            marks=[{"value": str(i), "label": f"{i}%"} for i in range(0, 101, 25)],
         ),
         "random": lambda: random.randint(0, 100),
     },
@@ -173,7 +174,7 @@ CONTROLS = [
             max=100,
             step=1,
             value=40,
-            marks=[{"value": str(i), "label": str(i)} for i in range(0, 100, 10)],
+            marks=[{"value": str(i), "label": str(i)} for i in range(0, 101, 25)],
         ),
         "random": lambda: random.randint(1, 100),
     },
@@ -186,7 +187,7 @@ CONTROLS = [
             max=850,
             step=1,
             value=700,
-            marks=[{"value": str(i), "label": str(i)} for i in range(0, 850, 100)],
+            marks=[{"value": str(i), "label": str(i)} for i in range(400, 850, 100)],
         ),
         "random": lambda: random.randint(400, 850),
     },
@@ -258,8 +259,8 @@ CONTROLS = [
                 id="input-OccStatus",
                 color="green",
                 data=[
-                    {"label": "Principal Residence", "value": "P"},
-                    {"label": "Second Residence", "value": "S"},
+                    {"label": "PR Res", "value": "P"},
+                    {"label": "2nd Res", "value": "S"},
                     {"label": "Investment", "value": "I"},
                 ],
                 value="P",
@@ -397,7 +398,7 @@ CONTROLS = [
             max=1000,
             step=1,
             value=90000,
-            marks=[{"value": str(i), "label": str(i)} for i in range(0, 1000, 100)],
+            marks=[{"value": str(i), "label": str(i)} for i in range(0, 1001, 250)],
         ),
         "random": lambda: random.randint(0, 1000),
     },

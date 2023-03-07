@@ -5,15 +5,21 @@ import pandas as pd
 from dash import html
 import numpy as np
 
-
-def style(fig):
-    return (
-        fig.update_layout(
-            paper_bgcolor="#1c2022", plot_bgcolor="#1c2022", font_color="#A3AAB7"
+from constants import shap_xpl
+        
+def figure_style(func):
+    def wrapper(*args, **kwargs):
+        fig = func(*args, **kwargs)
+        return (
+            fig.update_layout(
+                paper_bgcolor="#25262B", plot_bgcolor="#25262B", font_color="#76b900",
+                title=dict(font=dict( color="#76b900"),)
+            )
+            .update_xaxes(gridcolor="#3F3F3F", title=dict(font=dict( color="#76b900"),))
+            .update_yaxes(gridcolor="#3F3F3F", title=dict(font=dict( color="#76b900"),))
         )
-        .update_xaxes(gridcolor="#3F3F3F")
-        .update_yaxes(gridcolor="#3F3F3F")
-    )
+        
+    return wrapper
 
 
 def create_empty(text):
@@ -29,9 +35,10 @@ def create_empty(text):
     )
     return {"data": [], "layout": layout}
 
-
+@figure_style
 def action_gauge_chart(percentage):
     """ """
+    percentage = 100 - percentage
     fig = go.Figure(
         go.Indicator(
             mode="gauge",
@@ -51,11 +58,11 @@ def action_gauge_chart(percentage):
                     {"range": [33, 66], "color": "#6f992a"},
                     {"range": [66, 100], "color": "#76b900"},
                 ],
-                "threshold": {
-                    "line": {"color": "black", "width": 14},
-                    "thickness": 0.75,
-                    "value": percentage,
-                },
+                # "threshold": { # small dash inside the gauge itself
+                #     "line": {"color": "black", "width": 14},
+                #     "thickness": 0.75,
+                #     "value": percentage,
+                # },
             },
         )
     )
@@ -93,7 +100,7 @@ def action_gauge_chart(percentage):
     )
     return fig
 
-
+@figure_style
 def partition_shap_bar_plot(df):
     legend = [
         "Channel",
@@ -141,7 +148,7 @@ def partition_shap_bar_plot(df):
 
     return fig
 
-
+@figure_style
 def partition_cluster(df, display):
     if display == "everything":
         df_temp = df
@@ -149,6 +156,7 @@ def partition_cluster(df, display):
         custom_data = ["partition"]
         hovertemplate = "Partition: %{customdata[0]}<br>Parition default proportion: %{marker.color:.2f}%<extra></extra>"
         legend_title = "Default proportion"
+        sort_order = None
     else:
         df_temp = (
             df[df["Default"] == "1"]
@@ -159,8 +167,8 @@ def partition_cluster(df, display):
         custom_data = ["partition"]
         hovertemplate = "Partition: %{customdata[0]}<extra></extra>"
         legend_title = "Partition"
-
-    fig = px.scatter(df_temp, x="x", y="y", color=color, custom_data=custom_data)
+        sort_order = {"partition": [str(x) for x in np.sort([int(x) for x in df["partition"].unique()])]}
+    fig = px.scatter(df_temp, x="x", y="y", color=color, custom_data=custom_data, category_orders={"partition":sort_order})
     fig.data[0].hovertemplate = hovertemplate
     fig.update_layout(
         xaxis=dict(visible=False),
@@ -174,6 +182,53 @@ def partition_cluster(df, display):
     )
     return fig
 
+@figure_style
+def shap_local_plot(idx, explainer=shap_xpl, use_int=False):
+    idx = int(idx) if use_int else str(idx)
+    fig = explainer.plot.local_plot(index=idx)
+    for trace in fig.data:
+        if trace.x[0] > 0:
+            trace.marker.color = "rgba(183,127,55,1)"
+        else:
+            trace.marker.color = "rgba(118,185,0,1)"
+    return fig
+
+@figure_style
+def shap_contribution(col, probability=True):
+    fig = shap_xpl.plot.contribution_plot(col=col, proba=probability)
+    fig.update_layout(
+        coloraxis=dict(
+            colorbar=dict(title={"text": "test"}),
+            colorscale=[[0, "#76b900"], [1, "#B77F37"]],
+        )
+    )
+    return fig
+
+@figure_style
+def shap_feature_importance(selection=None):
+    if selection:
+        selection = [str(x) for x in selection]
+        fig = shap_xpl.plot.features_importance(selection=selection)
+    else:
+        fig = shap_xpl.plot.features_importance()
+    fig.data[0].marker.color = [
+        "rgba(118,185,0,1)"
+        for _ in range(len(fig.data[0].marker.color))
+    ]
+    return fig
+
+@figure_style
+def shap_compare(row_num, max_features=8):
+    print(row_num)
+    return shap_xpl.plot.compare_plot(
+        row_num=row_num, max_features=max_features
+    )
+
+@figure_style
+def shap_top_interactions(n=5):
+    fig = shap_xpl.plot.top_interactions_plot(nb_top_interactions=n)
+    fig.update_layout(updatemenus=[dict(x=1.15, y=1.2)])
+    return fig
 
 # def scatter_plot(df):
 #     fig = go.Figure(

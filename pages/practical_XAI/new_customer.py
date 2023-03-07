@@ -6,7 +6,7 @@ import plotly.express as px
 import dash_ag_grid as dag
 import pandas as pd
 
-from constants import shap_xpl, shap_predictor, CONTROLS
+from constants import shap_predictor, CONTROLS
 import utils.figures as figs
 
 dash.register_page(__name__, path="/practical-XAI/new-customer")
@@ -42,21 +42,22 @@ def manage_control_items(_type):
                                 mb="xs",
                                 children=[
                                     dmc.Title(
-                                        component["label"], style={"color": "#76b900"}
+                                        component["label"], style={"color": "#76b900"}, order=4
                                     ),
                                     tooltip,
                                 ],
                             ),
                             component["component"],
-                        ]
+                        ],
+                        style={"height":"150px"}
                     )
                 )
-
-        control_items = [dmc.Col(x, span=6) for x in control_items]
-        return dmc.Grid(
-            control_items,
-            style={"overflow-y": "scroll", "height": ""},
-        )
+        return html.Div(dmc.SimpleGrid(
+            cols=2,
+            children=control_items,
+            style={"overflow-y": "scroll", "max-height": "85vh"},
+            
+        ), className="scroll")
 
     ## if random_values
     random_values = []
@@ -69,7 +70,8 @@ def manage_control_items(_type):
 def layout():
     controls = manage_control_items("create_components")
     return dmc.Grid(
-        [
+        gutter="xl",
+        children=[
             dmc.Col(
                 dmc.LoadingOverlay(
                     controls,
@@ -117,12 +119,15 @@ def layout():
                 ),
                 span=2,
             ),
-            dmc.Col(
-                dcc.Graph(
-                    figure=figs.create_empty("Please create a new customer first"),
+            dmc.Col([
+                dmc.Title(dmc.Group(["Probability to Default:", html.Div("n/a", id="default-badge")], position="center"), order = 3),
+                dmc.LoadingOverlay(dcc.Graph(
+                    figure=figs.create_empty("Please analyze a new customer first"),
                     id="new-customer-graph",
                     config={"displayModeBar": False},
-                ),
+                    responsive=True,
+                    style= {'min-height': '300px'}
+                ))],
                 span=5,
             ),
         ],
@@ -173,15 +178,15 @@ def generate_customer(n_clicks, pre_defined_customer):
                 360,
                 80,
                 80,
-                1,
-                45,
-                750,
+                4,
+                0,
+                850,
                 "N",
                 "C",
                 "SF",
                 1,
                 "P",
-                "CA",
+                "KS",
                 94105,
                 "N",
                 1,
@@ -192,14 +197,14 @@ def generate_customer(n_clicks, pre_defined_customer):
                 dash.no_update,
                 "C",
                 "PNC BANK, N.A.",
-                4.5,
+                8.5,
                 0,
                 360,
                 80,
                 80,
                 1,
-                45,
-                750,
+                100,
+                400,
                 "N",
                 "C",
                 "SF",
@@ -215,6 +220,7 @@ def generate_customer(n_clicks, pre_defined_customer):
 
 @callback(
     Output("new-customer-graph", "figure"),
+    Output("default-badge", "children"),
     Input("create-new-customer", "n_clicks"),
     State("input-Channel", "value"),
     State("input-SellerName", "value"),
@@ -263,11 +269,28 @@ def create_new_customer_figure(n_clicks, *args):
         "FirstPaymentMonth": int(args[19]),
         "OrDateYear": 2007,
     }
-
-    print(new_customer)
+    
     try:
         shap_predictor.add_input(x=new_customer)
+        temp_explainer = shap_predictor.to_smartexplainer()
+        idx = temp_explainer.data["contrib_sorted"][0].iloc[0].index
+        fig = figs.shap_local_plot(0, temp_explainer, use_int=True)
+
+        probability = shap_predictor.predict_proba()["class_1"].values[0] * 100
+        if 0 <= probability <= 33:
+            badge_color = {"from": "lime", "to": "teal"}
+        elif 33 <= probability <= 66:
+            badge_color = {"from": "teal", "to": "orange"}
+        else:
+            badge_color = {"from": "orange", "to": "red"}
+        badge = dmc.Badge(
+            f"{probability:.2f}%" ,
+            variant="gradient",
+            gradient=badge_color,
+            size="xl"
+        )
     except Exception as e:
         print(e)
-    # fig = shap_xpl.plot.local_plot(index=999999)
-    return figs.create_empty("here")
+        fig = figs.create_empty("Error happened")
+        badge = ""
+    return fig, badge

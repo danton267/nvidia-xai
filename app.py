@@ -60,7 +60,7 @@ app.layout = dmc.MantineProvider(
                                                     icon=DashIconify(
                                                         icon="tabler:photo"
                                                     ),
-                                                    href="/clustering",
+                                                    href="/nvidia-xai/clustering",
                                                 ),
                                             ]
                                         ),
@@ -85,19 +85,19 @@ app.layout = dmc.MantineProvider(
                                                     icon=DashIconify(
                                                         icon="majesticons:data"
                                                     ),
-                                                    href="/practical-XAI/loan-default-dataset",
+                                                    href="/nvidia-xai/practical-XAI/loan-default-dataset",
                                                 ),
                                                 dmc.MenuItem(
                                                     "New Loan Application",
                                                     icon=DashIconify(icon="mdi:bank"),
-                                                    href="/practical-XAI/new-customer",
+                                                    href="/nvidia-xai/practical-XAI/new-customer",
                                                 ),
                                                 dmc.MenuItem(
                                                     "Customer Comparison",
                                                     icon=DashIconify(
                                                         icon="pajamas:comparison"
                                                     ),
-                                                    href="/practical-XAI/customer-comparison",
+                                                    href="/nvidia-xai/practical-XAI/customer-comparison",
                                                 ),
                                             ]
                                         ),
@@ -183,7 +183,7 @@ app.layout = dmc.MantineProvider(
                                                 dmc.MenuItem(
                                                     "App Code",
                                                     icon=DashIconify(icon="mdi:github"),
-                                                    href="github.com/plotly/dash",
+                                                    href="https://github.com/danton267/nvidia-xai",
                                                     target="_blank",
                                                 ),
                                                 dmc.MenuItem(
