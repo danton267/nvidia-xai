@@ -10,6 +10,6 @@ pyarrow
 
 # dash-shap-components==0.0.2
 # shap==0.40.0
-dash-ag-grid==2.0.0a1
+dash-ag-grid==2.0.0a2
 numpy==1.23.5
 shapash==2.3.0

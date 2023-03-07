@@ -18,26 +18,34 @@ def layout():
         children=[
             dmc.Card(
                 [
-                    dmc.Center(
-                        dmc.SegmentedControl(
-                            id="segmented-default-control",
-                            value="everything",
-                            data=[
-                                {"value": "default", "label": "Defaulted"},
-                                {"value": "safe", "label": "Safe Only"},
-                                {"value": "everything", "label": "Everything"},
-                            ],
-                            mt=10,
-                        ),
+                    dmc.Group(
+                        position="apart",
+                        children=[
+                            dmc.Title("Partition", order=2),
+                            dmc.SegmentedControl(
+                                id="segmented-default-control",
+                                value="everything",
+                                data=[
+                                    {"value": "default", "label": "Defaulted"},
+                                    {"value": "safe", "label": "Safe Only"},
+                                    {"value": "everything", "label": "Everything"},
+                                ],
+                                mt=10,
+                            ),
+                        ]
                     ),
                     dmc.Space(h=10),
-                    dmc.LoadingOverlay(dcc.Graph(figure=fig_empty, id="fig-clusters")),
+                    dmc.LoadingOverlay(dcc.Graph(figure=fig_empty, id="fig-clusters",
+                    config={"displayModeBar": False},)),
                 ]
             ),
-            dmc.Card(
+            dmc.Card([
+                
+                dmc.Title("Expected Group Behavior", order=2),
                 dmc.LoadingOverlay(
-                    dcc.Graph(figure=fig_empty, id="fig-partition-shap")
-                ),
+                    dcc.Graph(figure=fig_empty, id="fig-partition-shap",
+                    config={"displayModeBar": False},)
+                ),]
             ),
             dcc.Location(id="url-cluster", refresh=False),
         ],

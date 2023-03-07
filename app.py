@@ -183,7 +183,7 @@ app.layout = dmc.MantineProvider(
                                                 dmc.MenuItem(
                                                     "App Code",
                                                     icon=DashIconify(icon="mdi:github"),
-                                                    href="github.com/plotly/dash",
+                                                    href="https://github.com/danton267/nvidia-xai",
                                                     target="_blank",
                                                 ),
                                                 dmc.MenuItem(
